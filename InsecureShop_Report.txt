@@ -1,0 +1,67 @@
+DroidWeb Audit v1.0.0
+========================================================================
+APK: InsecureShop.apk
+SHA-256: a83298ae4a37fcab8101e8b41e513dd2199af71a94ea537d556a318e07d4d1bd
+Pacote: com.insecureshop
+Analisado em: 2026-11-08T22:26:39.069636+00:00
+
+RESUMO DE INDICADORES
+------------------------------------------------------------------------
+Maior nível heurístico: HIGH
+Total: 6
+  HIGH: 2
+  MEDIUM: 2
+  LOW: 0
+  INFO: 2
+
+ACHADOS
+------------------------------------------------------------------------
+[1] Universal access from file URLs (WV-API-009)
+    Severidade heurística: HIGH | Confiança: MEDIUM
+    Categoria: file_access | Evidência: DEX_METHOD_REFERENCE
+    Justificativa: The application references a setting that can allow file-origin content to make cross-origin requests when enabled.
+    Evidência: {"callers": [{"class": "Lcom/insecureshop/PrivateActivity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 196}, {"class": "Lcom/insecureshop/WebView2Activity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 214}, {"class": "Lcom/insecureshop/WebViewActivity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 172}], "target_class": "Landroid/webkit/WebSettings;", "target_descriptor": "(Z)V", "target_method": "setAllowUniversalAccessFromFileURLs", "xref_count": 3}
+    Validação manual: Resolve the configured value and determine whether untrusted file-origin content can reach sensitive origins or data.
+    Status: REQUIRES_MANUAL_VALIDATION
+
+[2] Universal file-origin access API string (WV-STR-003)
+    Severidade heurística: HIGH | Confiança: LOW
+    Categoria: string_indicator | Evidência: DEX_STRING
+    Justificativa: A sensitive WebSettings API name is present as a string; this does not prove invocation or an enabled setting.
+    Evidência: {"matched_pattern": "setallowuniversalaccessfromfileurls", "references": [], "value": "setAllowUniversalAccessFromFileURLs", "value_truncated": false}
+    Validação manual: Localize a referência no código e confirme se a string participa de um fluxo executável relacionado a WebView.
+    Status: REQUIRES_MANUAL_VALIDATION
+
+[3] JavaScript setting (WV-API-006)
+    Severidade heurística: MEDIUM | Confiança: LOW
+    Categoria: javascript | Evidência: DEX_METHOD_REFERENCE
+    Justificativa: The application changes the JavaScript setting. JavaScript is frequently required by legitimate applications; risk depends on content trust and other controls.
+    Evidência: {"callers": [{"class": "Lcom/insecureshop/PrivateActivity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 112}, {"class": "Lcom/insecureshop/WebView2Activity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 154}, {"class": "Lcom/insecureshop/WebViewActivity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 112}], "target_class": "Landroid/webkit/WebSettings;", "target_descriptor": "(Z)V", "target_method": "setJavaScriptEnabled", "xref_count": 3}
+    Validação manual: Determine the configured boolean value and whether untrusted or attacker-controlled content can be loaded.
+    Status: REQUIRES_MANUAL_VALIDATION
+
+[4] Local file URL scheme (WV-STR-002)
+    Severidade heurística: MEDIUM | Confiança: LOW
+    Categoria: string_indicator | Evidência: DEX_STRING
+    Justificativa: A file URL string is present. Presence does not prove that a WebView loads it.
+    Evidência: {"matched_pattern": "file://", "references": [{"class": "Lcom/bumptech/glide/load/model/AssetUriLoader;", "descriptor": "()V", "method": "<clinit>", "offset": 0}], "value": "file:///android_asset/", "value_truncated": false}
+    Validação manual: Localize a referência no código e confirme se a string participa de um fluxo executável relacionado a WebView.
+    Status: REQUIRES_MANUAL_VALIDATION
+
+[5] WebView URL loading (WV-API-004)
+    Severidade heurística: INFO | Confiança: LOW
+    Categoria: navigation | Evidência: DEX_METHOD_REFERENCE
+    Justificativa: The application loads a URL in a WebView. This is common behavior and is not a vulnerability by itself.
+    Evidência: {"callers": [{"class": "Lcom/insecureshop/PrivateActivity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 230}, {"class": "Lcom/insecureshop/WebView2Activity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 326}, {"class": "Lcom/insecureshop/WebView2Activity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 446}, {"class": "Lcom/insecureshop/WebView2Activity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 554}, {"class": "Lcom/insecureshop/WebViewActivity;", "descriptor": "(Landroid/os/Bundle;)V", "method": "onCreate", "offset": 482}], "target_class": "Landroid/webkit/WebView;", "target_descriptor": "(Ljava/lang/String;)V", "target_method": "loadUrl", "xref_count": 5}
+    Validação manual: Trace the URL source and verify scheme, host, redirect, and navigation allowlists.
+    Status: REQUIRES_MANUAL_VALIDATION
+
+[6] Android WebKit namespace string (WV-STR-006)
+    Severidade heurística: INFO | Confiança: LOW
+    Categoria: string_indicator | Evidência: DEX_STRING
+    Justificativa: A WebKit namespace string is present and may be useful for locating WebView-related code.
+    Evidência: {"matched_pattern": "android.webkit", "references": [{"class": "Landroidx/appcompat/app/AppCompatViewInflater;", "descriptor": "()V", "method": "<clinit>", "offset": 70}, {"class": "Landroidx/asynclayoutinflater/view/AsyncLayoutInflater$BasicInflater;", "descriptor": "()V", "method": "<clinit>", "offset": 18}], "value": "android.webkit.", "value_truncated": false}
+    Validação manual: Localize a referência no código e confirme se a string participa de um fluxo executável relacionado a WebView.
+    Status: REQUIRES_MANUAL_VALIDATION
+
+NOTA: indicadores estáticos não comprovam vulnerabilidades. A ausência de achados também não comprova segurança.
